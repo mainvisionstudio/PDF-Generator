@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mainvision - PDF Generator</title>
+    <link rel="icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"
+        integrity="sha512-z8IYLHO8bTgFqj+yrPyIJnzBDf7DDhWwiEsk4sY+Oe6J2M+WQequeGS7qioI5vT6rXgVRb4K1UVQC5ER7MKzKQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/downloadjs/1.4.8/download.min.js"
+        integrity="sha512-WiGQZv8WpmQVRUFXZywo7pHIO0G/o3RyiAJZj8YXNN4AV7ReR1RYWVmZJ6y3H06blPcjJmG/sBpOVZjTSFFlzQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"
+        integrity="sha512-Z8CqofpIcnJN80feS2uccz+pXWgZzeKxDsDNMD/dJ6997/LSRY+W4NmEt9acwR+Gt9OHN0kkI1CTianCwoqcjQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <img class="reset" onclick="onBegin()" src="./assets/images/reset.jpg">
+    <div class="container">
+        <div class="top" id="top"></div>
+        <div class="mid" id="mid"></div>
+        <div class="bot" id="bot"></div>
+    </div>
+</body>
+<script>
+    try {
+
+    } catch (error) {
+        alert("Ocorreu um erro: " + error.message);
+    }
+
+    var PDFDocument = PDFLib.PDFDocument;
+
+    function ui(top, mid, bot) {
+        if (top != null) {
+            document.getElementById('top').innerHTML = top;
+        }
+        if (mid != null) {
+            document.getElementById('mid').innerHTML = mid;
+        }
+        if (bot != null) {
+            document.getElementById('bot').innerHTML = bot;
+        }
+    }
+
+    function onBegin() {
+        const selectEventTypeHeader = `<h2 class= "center black">Qual o tipo de evento que pretende gerar uma proposta?</h2>`;
+        const selectEventTypeMenu = `
+        <div class = "midContainer">
+            <div class = "type digitalType" onclick="waitUploadQuoteAndImagesPdf('d')"><h3 class="center white">DIGITAL 3D</h3></div>
+            <div class = "type presencialType" onclick="waitUploadQuoteAndImagesPdf('p')"><h3 class="center white">PRESENCIAL</h3></div>
+            <div class="type espacoType" onclick="waitUploadQuoteAndImagesPdf('e')"><h3 class="center white">ESPAÇO</h3></div>
+        </div>`;
+        const selectEventTypeFooter = ``;
+
+        ui(selectEventTypeHeader, selectEventTypeMenu, selectEventTypeFooter);
+    }
+
+    function waitUploadQuoteAndImagesPdf(selectedEventType) {
+        try {
+            let inputs = { logo: null, quote: null, maquete: null, ref: null };
+            let previews = { logo: null, quote: null, maquete: null, ref: null };
+            let labels = { logo: null, quote: null, maquete: null, ref: null };
+            let files = { logo: null, quote: null, maquete: null, ref: null };
+
+            const uploadQuoteAndImagesPdfHeader = `<h2 class= "center black">Insira os documentos pedidos abaixo.</h2>`;
+            //inserir Logo, PDF Orçamento, Imagens Maquete e Imagens Referencia.
+            const uploadQuoteAndImagesPdfMenu = `
+        <div class = "midContainer">
+            <label for="logo_upload" id="logo_label" class= "inputDoc"><h1>+</h1><h2>Logo</h2>
+                <input class="none" type="file" id="logo_upload" name="logo_upload" accept="image/jpeg, image/png"/><br>
+                <div id="logo_preview" class="logo_preview">
+                    <h5>(Uma Imagem)</h5>
+                </div>
+            </label>
+            <label for="quote_upload" id="quote_label" class= "inputDoc"><h1>+</h1><h2>Orçamento</h2><br>
+                <input class="none" type="file" id="quote_upload" name="quote_upload" accept="application/pdf"/>
+                <div id="quote_preview" class="quote_preview">
+                    <h5>(Até 8 Páginas)</h5>
+                </div>
+            </label>
+            <label for="maquete_upload" id="maquete_label" class="inputDoc"><h1>+</h1><h2>Maquete</h2><br>
+                <input class="none" type="file" id="maquete_upload" name="maquete_upload" accept="image/jpeg, image/png" multiple/>
+                <div id="maquete_preview" class="maquete_preview">
+                    <h5>(Até 16 Imagens)</h5>
+                </div>
+            </label>
+            <label for="ref_upload" id="ref_label" class="inputDoc"><h1>+</h1><h2>Referencias</h2><br>
+                <input class="none" type="file" id="ref_upload" name="ref_upload" accept="image/jpeg, image/png" multiple/>
+                <div id="ref_preview" class="ref_preview">
+                    <h5>(Até 16 Imagens)</h5>
+                </div>
+            </label>
+        </div>`;
+            const uploadQuoteAndImagesPdfFooter = `
+        <input type="text" placeholder="DIGITE O NOME DO CLIENTE" id="name">
+        <button type="button" id="button"><h3 class="white">+ Gerar Proposta</h3></button>`;
+
+
+            ui(uploadQuoteAndImagesPdfHeader, uploadQuoteAndImagesPdfMenu, uploadQuoteAndImagesPdfFooter);
+
+            inputs.logo = document.getElementById("logo_upload");
+            inputs.quote = document.getElementById("quote_upload");
+            inputs.maquete = document.getElementById("maquete_upload");
+            inputs.ref = document.getElementById("ref_upload");
+
+            previews.logo = document.getElementById("logo_preview");
+            previews.quote = document.getElementById("quote_preview");
+            previews.maquete = document.getElementById("maquete_preview");
+            previews.ref = document.getElementById("ref_preview");
+
+            labels.logo = document.getElementById("logo_label");
+            labels.quote = document.getElementById("quote_label");
+            labels.maquete = document.getElementById("maquete_label");
+            labels.ref = document.getElementById("ref_label");
+
+
+            inputs.logo.addEventListener("change", () => {
+                updateImageDisplay(inputs.logo, previews.logo, labels.logo);
+            });
+            inputs.quote.addEventListener("change", () => {
+                updateImageDisplay(inputs.quote, previews.quote, labels.quote);
+            });
+            inputs.maquete.addEventListener("change", () => {
+                updateImageDisplay(inputs.maquete, previews.maquete, labels.maquete);
+            });
+            inputs.ref.addEventListener("change", () => {
+                updateImageDisplay(inputs.ref, previews.ref, labels.ref);
+            });
+
+            const button = document.getElementById("button");
+            button.addEventListener("click", (e) => {
+                e.preventDefault();
+
+                files.logo = [...inputs.logo.files];
+                files.quote = [...inputs.quote.files];
+                files.maquete = [...inputs.maquete.files];
+                files.ref = [...inputs.ref.files];
+                const name = document.getElementById("name").value;
+                startUploadQuoteAndImagesPdf(files.logo, files.quote, files.maquete, files.ref, name, selectedEventType);
+            });
+        } catch (error) {
+            alert("Ocorreu um erro: " + error.message);
+        }
+    }
+
+    function updateImageDisplay(input, preview, label) {
+        try {
+            while (preview.firstChild) {
+                preview.removeChild(preview.firstChild);
+            }
+
+            const curFiles = input.files;
+            if (curFiles.length !== 0) {
+                label.style.backgroundColor = "green";
+                const list = preview;
+                for (const file of curFiles) {
+                    const image = document.createElement("img");
+                    image.src = URL.createObjectURL(file);
+                    image.alt = image.title = file.name;
+
+                    list.appendChild(image);
+                }
+            }
+        } catch (error) {
+            alert("Ocorreu um erro: " + error.message);
+        }
+    }
+
+
+    async function startUploadQuoteAndImagesPdf(filesLogo, filesQuote, filesMaquete, filesRef, name, eventType) {
+        try {
+            finish();
+            let quoteUnusedPages = [];
+            let maqueteUnusedPages = [];
+            let refUnusedPages = [];
+            let type = "";
+
+            if (eventType == "e") {
+                maqueteUnusedPages = [10, 11, 12, 13, 14, 15, 16, 17];
+                refUnusedPages = [18, 19, 20, 21, 22, 23, 24, 25];
+                quoteUnusedPages = [26, 27, 28, 29, 30, 31, 32, 33];
+
+                type = "Mainvision_Proposta_de_Espaço_para_Evento_";
+            } else {
+                maqueteUnusedPages = [11, 12, 13, 14, 15, 16, 17, 18];
+                refUnusedPages = [19, 20, 21, 22, 23, 24, 25, 26];
+                quoteUnusedPages = [27, 28, 29, 30, 31, 32, 33, 34];
+
+                if (eventType == "d") {
+                    type = "Mainvision_Proposta_de_Evento_Digital_";
+                } else {
+                    type = "Mainvision_Proposta_de_Evento_Presencial_";
+                }
+            }
+
+            const formUrl = `./assets/pdf/${eventType}.pdf`;
+            const formPdfBytes = await fetch(formUrl).then(res => res.arrayBuffer());
+            var pdfDoc = await PDFDocument.load(formPdfBytes)
+            const form = pdfDoc.getForm();
+
+            //Logo
+            if (filesLogo.length > 0) {
+                let logoImage = "";
+                const logoBytes = await new Response(filesLogo[0]).arrayBuffer();
+
+                const fileExtension = await getFileExtension(filesLogo[0].name);
+                if (fileExtension == 'png') {
+                    const compressLogoImage = await createCompressedImage(logoBytes, 'image/png');
+                    logoImage = await pdfDoc.embedPng(compressLogoImage);
+                } else {
+                    const compressLogoImage = await createCompressedImage(logoBytes, 'image/jpeg');
+                    logoImage = await pdfDoc.embedJpg(compressLogoImage);
+                }
+
+                const logoField = form.getButton('logo');
+                logoField.setImage(logoImage);
+            }
+
+            //Maquete
+            for (let i = 0; i < filesMaquete.length; i++) {
+                let maqueteImage = "";
+                const maqueteBytes = await new Response(filesMaquete[i]).arrayBuffer();
+
+                const fileExtension = await getFileExtension(filesMaquete[i].name);
+                if (fileExtension == 'png') {
+                    const compressMaqueteImage = await createCompressedImage(maqueteBytes, 'image/png');
+                    maqueteImage = await pdfDoc.embedPng(compressMaqueteImage);
+                } else {
+                    const compressMaqueteImage = await createCompressedImage(maqueteBytes, 'image/jpeg');
+                    maqueteImage = await pdfDoc.embedJpg(compressMaqueteImage);
+                }
+
+                const maqueteField = form.getButton(`maquete_${i}`);
+                maqueteField.setImage(maqueteImage);
+
+                if (i % 2 == 0) {
+                    maqueteUnusedPages.shift();
+                }
+
+            }
+
+            //Ref
+            for (let i = 0; i < filesRef.length; i++) {
+                let refImage = "";
+                const refBytes = await new Response(filesRef[i]).arrayBuffer();
+
+                const fileExtension = await getFileExtension(filesRef[i].name);
+                if (fileExtension == 'png') {
+                    const compressRefImage = await createCompressedImage(refBytes, 'image/png');
+                    refImage = await pdfDoc.embedPng(compressRefImage);
+                } else {
+                    const compressRefImage = await createCompressedImage(refBytes, 'image/jpeg');
+                    refImage = await pdfDoc.embedJpg(compressRefImage);
+                }
+
+                const refField = form.getButton(`ref_${i}`);
+                refField.setImage(refImage);
+                if (i % 2 == 0) {
+                    refUnusedPages.shift();
+                }
+            }
+
+            //Quote
+            let quoteArray = [];
+            if (filesQuote.length > 0) {
+                const quoteBytes = await new Response(filesQuote[0]).arrayBuffer();
+                const pdfQuote = await PDFDocument.load(quoteBytes);
+                const pdfQuotePages = pdfQuote.getPages();
+
+                //Split pdfQuote
+                for (let i = 0; i < pdfQuotePages.length; i++) {
+                    let img = await pdfToJpg(quoteBytes, i)
+                    quoteArray.push(img);
+                }
+                for (let i = 0; i < quoteArray.length; i++) {
+                    const quoteField = await form.getButton(`quote_${i}`);
+                    const quoteImage = await pdfDoc.embedJpg(quoteArray[i]);
+                    quoteField.setImage(quoteImage);
+                    quoteUnusedPages.shift();
+                }
+            }
+
+            //Flatten
+            form.flatten();
+
+            //Remove Pages
+            let unusedPages = [...maqueteUnusedPages, ...refUnusedPages, ...quoteUnusedPages];
+            console.log(unusedPages);
+
+            let removedPagesCount = 1;
+            for (const pageNumber of unusedPages) {
+                const adjustedPageNumber = pageNumber - removedPagesCount;
+                if (adjustedPageNumber >= 0 && adjustedPageNumber < pdfDoc.getPageCount()) {
+                    pdfDoc.removePage(adjustedPageNumber);
+                    removedPagesCount++;
+                } else {
+                    console.log(`A página ${pageNumber} não existe no documento.`);
+                }
+            }
+
+            //Finish
+            const pdfBytes = await pdfDoc.save()
+
+            var date = new Date();
+            const dia = '_' + date.getDate().toString().padStart(2, '0') + (date.getMonth() + 1).toString().padStart(2, '0') + date.getFullYear();
+            const hora = '_' + date.getHours().toString().padStart(2, '0') + date.getMinutes().toString().padStart(2, '0');
+
+            name = type + name + dia + hora;
+            download(pdfBytes, name, "application/pdf");
+        } catch (error) {
+            alert("Ocorreu um erro: " + error.message);
+        }
+    }
+
+    async function getFileExtension(filename) {
+        try {
+            return filename.split('.').pop().toLowerCase();
+        } catch (error) {
+            alert("Ocorreu um erro: " + error.message);
+        }
+    }
+
+    async function pdfToJpg(pdfBuffer, pdfPage) {
+        try {
+            pdfPage++
+            const loadingTask = pdfjsLib.getDocument({ data: pdfBuffer });
+            const pdf = await loadingTask.promise;
+            const page = await pdf.getPage(pdfPage);
+
+            const scale = 1.5;
+            const viewport = page.getViewport({ scale });
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            await page.render({ canvasContext: context, viewport }).promise;
+
+            const imgData = canvas.toDataURL('image/jpeg');
+
+            const byteString = atob(imgData.split(',')[1]);
+            const byteArray = new Uint8Array(byteString.length);
+            for (let i = 0; i < byteString.length; i++) {
+                byteArray[i] = byteString.charCodeAt(i);
+            }
+
+            return byteArray;
+        } catch (error) {
+            alert("Ocorreu um erro: " + error.message);
+        }
+    }
+
+    async function createCompressedImage(imageBytes, mimeType) {
+        try {
+            return new Promise((resolve, reject) => {
+                const image = new Image();
+                const blob = new Blob([imageBytes], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+
+                image.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxWidth = 892;
+                    const maxHeight = 892 * (image.height / image.width);
+
+                    if (image.width > maxWidth || image.height > maxHeight) {
+                        canvas.width = maxWidth;
+                        canvas.height = maxHeight;
+                    } else {
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+                    }
+
+                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                    canvas.toBlob((blob) => {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            const arrayBuffer = reader.result;
+                            resolve(arrayBuffer);
+                        };
+                        reader.onerror = reject;
+                        reader.readAsArrayBuffer(blob);
+                    }, mimeType);
+                };
+
+                image.onerror = (error) => {
+                    reject(error);
+                };
+
+                image.src = url;
+            });
+        } catch (error) {
+            alert("Ocorreu um erro: " + error.message);
+        }
+    }
+
+    function finish() {
+        const random = Math.floor(Math.random() * 7) + 1;
+
+        const finishHeader = `<h2 class= "center black">A processar...</h2>`;
+        //inserir Logo, PDF Orçamento, Imagens Maquete e Imagens Referencia.
+        const finishMenu = `
+        <div class = "midContainer">
+            <img class="gif" src="./assets/images/loading_${random}.gif">
+        </div>`;
+        const finishFooter = `
+        <h3 class= "center black">Se o ficheiro for demasiado grande comprima em <a href="https://www.ilovepdf.com/pt/comprimir_pdf" target="_blank">ILovePDF.com</a></h3>`;
+
+        ui(finishHeader, finishMenu, finishFooter);
+    }
+
+    onBegin();
+</script>
+
+</html>
