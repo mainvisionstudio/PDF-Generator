@@ -1,0 +1,233 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h3 {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h4 {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h5 {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+input {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.6);
+    border-width: 2px;
+    width: 20%;
+    height: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    padding: 10px;
+    border-radius: 30px;
+    box-shadow: 10px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-110%, -50%);
+    opacity: 60%;
+    transition: 0.5s;
+}
+
+input:hover {
+    opacity: 100%;
+}
+
+.reset {
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0px;
+    position: fixed;
+    left: 100%;
+    transform: translate(-150%, 25%);
+    opacity: 40%;
+    transition: 0.5s;
+}
+
+.reset:hover {
+    opacity: 100%;
+}
+
+img {
+    max-width: 20%;
+    max-height: 50px;
+    margin: 5px;
+}
+
+.gif {
+    max-width: 100%;
+    max-height: 100%;
+    height: 80%;
+    margin: 0px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+button {
+    background-color: blue;
+    width: 20%;
+    height: 60px;
+    padding: 10px;
+    border: 0;
+    border-radius: 30px;
+    box-shadow: 10px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-110%, -50%);
+    opacity: 60%;
+    transition: 0.5s;
+}
+
+button:hover {
+    opacity: 100%;
+}
+canvas {
+    display: none;
+}
+
+.none {
+    display: none;
+}
+
+.white {
+ color: white;
+}
+
+.black {
+    color: black;
+}
+
+.center {
+    position: relative;
+    text-align: center;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.container {
+    margin: 0 5vw;
+    padding: 0px;
+    min-width: 800px;
+    min-height: 800px;
+    width: 90vw;
+    height: 100vh;
+    background-color: white;
+}
+
+
+
+.top {
+    width: 100%;
+    height: 20%;
+    margin: 0px;
+    padding: 0px;
+    background-color: white;
+}
+
+.mid {
+    width: 100%;
+    height: calc(100% - 60%);
+    margin: 0px;
+    padding: 0px;
+    background-color: white;
+    align-content: center;
+    align-items: center;
+}
+
+.bot {
+    width: 100%;
+    height: 30%;
+    margin: 0px;
+    padding: 0px;
+    background-color: white;
+}
+
+
+
+.midContainer {
+    width: 80%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    left: 10%;
+}
+
+.type {
+    width: calc(calc(100% / 3) - 1.5%);
+    height: 100%;
+    margin: 0 0.5%;
+    padding: 0;
+    position: relative;
+    display: inline-block;
+    background-position: center;
+    background-size: 200%;
+    background-color: gray;
+    border-radius: 10px;
+    opacity: 80%;
+    transition: 0.5s;
+}
+
+.type:hover {
+    opacity: 100%;
+    background-size: 220%;
+}
+
+.inputDoc {
+    width: calc(calc(100% / 4) - 4%);
+    height: 100%;
+    margin: 0 0.5%;
+    padding: 1%;
+    position: relative;
+    display: inline-table;
+    background-position: center;
+    background-size: 200%;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    overflow-y:auto;
+    opacity: 80%;
+    transition: 0.5s;
+}
+
+.inputDoc:hover {
+    opacity: 100%;
+    background-size: 220%;
+}
+
+.digitalType {
+    background-image: url('assets/images/digital.jpg');
+}
+
+.presencialType {
+    background-image: url('assets/images/presencial.jpg');
+}
+
+.espacoType {
+    background-image: url('assets/images/espaco.jpg');
+}
