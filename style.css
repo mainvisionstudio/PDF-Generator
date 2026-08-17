@@ -364,7 +364,7 @@ canvas {
 
     width: calc(calc(50% / 2);
 
-    height: auto%;
+    height: auto;
     
     aspect-ratio: 1/1;
 
