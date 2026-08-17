@@ -362,7 +362,7 @@ canvas {
 
 .type {
 
-    width: calc(calc(50% / 2);
+    width: calc(50% - 2%);
 
     height: auto;
     
