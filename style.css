@@ -362,9 +362,9 @@ canvas {
 
 .type {
 
-    width: calc(calc(100% / 3) - 1.5%);
+    width: calc(calc(50% / 2);
 
-    height: 100%;
+    height: auto%;
     
     aspect-ratio: 1/1;
 
