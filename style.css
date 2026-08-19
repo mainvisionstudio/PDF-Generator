@@ -611,3 +611,12 @@ canvas {
     background-color: rgb(210, 0, 0);
     opacity: 1;
 }
+button#button {
+    background-color: rgb(244, 0, 0) !important;
+    opacity: 1;
+}
+
+button#button:hover {
+    background-color: rgb(210, 0, 0) !important;
+    opacity: 1;
+}
