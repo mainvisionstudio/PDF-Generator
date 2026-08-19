@@ -193,9 +193,60 @@
 
             const uploadQuoteAndImagesPdfFooter = `
 
-        <input type="text" placeholder="DIGITE O NOME DO CLIENTE" id="name">
+        const uploadQuoteAndImagesPdfFooter = `
 
-        <button type="button" id="button"><h3 class="white">+ Gerar Proposta</h3></button>`;
+    <div class="acoesProposta">
+
+        <input type="text"
+               placeholder="DIGITE O NOME DO CLIENTE"
+               id="name">
+
+        <button type="button" id="openTimelineButton">
+            <h3 class="white">+ Plano do evento</h3>
+        </button>
+
+        <button type="button" id="button">
+            <h3 class="white">+ Gerar Proposta</h3>
+        </button>
+
+    </div>
+
+    <div id="timelineModal" class="timelineModal none">
+
+        <div class="timelinePanel">
+
+            <div class="timelineHeader">
+                <h2>Plano do evento</h2>
+
+                <button type="button"
+                        id="closeTimelineButton"
+                        class="closeTimelineButton">
+                    ×
+                </button>
+            </div>
+
+            <p>
+                Esta secção é opcional. Se não preencheres nenhuma
+                etapa, a página PLANO não será acrescentada ao PDF.
+            </p>
+
+            <div id="timelineStages"></div>
+
+            <div class="timelineActions">
+
+                <button type="button" id="addStageButton">
+                    + Adicionar etapa
+                </button>
+
+                <button type="button" id="saveTimelineButton">
+                    Concluir
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>`;
 
 
 
@@ -262,7 +313,55 @@
             });
 
 
+const timelineModal =
+    document.getElementById("timelineModal");
 
+const openTimelineButton =
+    document.getElementById("openTimelineButton");
+
+const closeTimelineButton =
+    document.getElementById("closeTimelineButton");
+
+const addStageButton =
+    document.getElementById("addStageButton");
+
+const saveTimelineButton =
+    document.getElementById("saveTimelineButton");
+
+
+openTimelineButton.addEventListener("click", () => {
+
+    timelineModal.classList.remove("none");
+
+    const stages =
+        document.querySelectorAll(".timelineStage");
+
+    if (stages.length === 0) {
+        addTimelineStage();
+    }
+
+});
+
+
+closeTimelineButton.addEventListener("click", () => {
+
+    timelineModal.classList.add("none");
+
+});
+
+
+saveTimelineButton.addEventListener("click", () => {
+
+    timelineModal.classList.add("none");
+
+});
+
+
+addStageButton.addEventListener("click", () => {
+
+    addTimelineStage();
+
+});
             const button = document.getElementById("button");
 
             button.addEventListener("click", (e) => {
@@ -279,9 +378,21 @@
 
                 files.ref = [...inputs.ref.files];
 
-                const name = document.getElementById("name").value;
+                const name =
+    document.getElementById("name").value;
 
-                startUploadQuoteAndImagesPdf(files.logo, files.quote, files.maquete, files.ref, name, selectedEventType);
+const timelineStages =
+    collectTimelineStages();
+
+startUploadQuoteAndImagesPdf(
+    files.logo,
+    files.quote,
+    files.maquete,
+    files.ref,
+    name,
+    selectedEventType,
+    timelineStages
+);
 
             });
 
@@ -339,11 +450,129 @@
 
     }
 
+function addTimelineStage() {
+
+    const container =
+        document.getElementById("timelineStages");
+
+    const stageNumber =
+        container.querySelectorAll(".timelineStage").length + 1;
+
+    const stage = document.createElement("div");
+
+    stage.className = "timelineStage";
+
+    stage.innerHTML = `
+
+        <div class="stageHeader">
+
+            <h3>Etapa ${stageNumber}</h3>
+
+            <button type="button"
+                    class="removeStageButton">
+                Remover
+            </button>
+
+        </div>
+
+        <div class="stageFields">
+
+            <input type="text"
+                   class="stageTitle"
+                   placeholder="Ex.: Montagem, ensaios ou evento">
+
+            <input type="date"
+                   class="stageDate">
+
+            <input type="time"
+                   class="stageStartTime"
+                   aria-label="Hora inicial">
+
+            <input type="time"
+                   class="stageEndTime"
+                   aria-label="Hora final">
+
+            <textarea class="stageDescription"
+                      placeholder="Descrição desta etapa"></textarea>
+
+        </div>
+    `;
+
+    stage
+        .querySelector(".removeStageButton")
+        .addEventListener("click", () => {
+
+            stage.remove();
+            updateTimelineStageNumbers();
+
+        });
+
+    container.appendChild(stage);
+
+}
+
+
+function updateTimelineStageNumbers() {
+
+    const stages =
+        document.querySelectorAll(".timelineStage");
+
+    stages.forEach((stage, index) => {
+
+        stage.querySelector("h3").textContent =
+            `Etapa ${index + 1}`;
+
+    });
+
+}
+
+
+function collectTimelineStages() {
+
+    const stages =
+        document.querySelectorAll(".timelineStage");
+
+    return [...stages]
+        .map(stage => ({
+
+            title: stage
+                .querySelector(".stageTitle")
+                .value
+                .trim(),
+
+            date: stage
+                .querySelector(".stageDate")
+                .value,
+
+            startTime: stage
+                .querySelector(".stageStartTime")
+                .value,
+
+            endTime: stage
+                .querySelector(".stageEndTime")
+                .value,
+
+            description: stage
+                .querySelector(".stageDescription")
+                .value
+                .trim()
+
+        }))
+        .filter(stage =>
+
+            stage.title !== "" ||
+            stage.date !== "" ||
+            stage.startTime !== "" ||
+            stage.endTime !== "" ||
+            stage.description !== ""
+
+        );
+
+}
 
 
 
-
-    async function startUploadQuoteAndImagesPdf(filesLogo, filesQuote, filesMaquete, filesRef, name, eventType) {
+    async function startUploadQuoteAndImagesPdf(filesLogo, filesQuote, filesMaquete, filesRef, name, eventType, timelineStages) {
 
         try {
 
