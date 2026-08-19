@@ -193,52 +193,72 @@
 
             const uploadQuoteAndImagesPdfFooter = `
 
-        const uploadQuoteAndImagesPdfFooter = `
-
     <div class="acoesProposta">
 
-        <input type="text"
-               placeholder="DIGITE O NOME DO CLIENTE"
-               id="name">
+        <input
+            type="text"
+            placeholder="DIGITE O NOME DO CLIENTE"
+            id="name"
+        >
 
-        <button type="button" id="openTimelineButton">
+        <button
+            type="button"
+            id="openTimelineButton"
+        >
             <h3 class="white">+ Plano do evento</h3>
         </button>
 
-        <button type="button" id="button">
+        <button
+            type="button"
+            id="button"
+        >
             <h3 class="white">+ Gerar Proposta</h3>
         </button>
 
     </div>
 
-    <div id="timelineModal" class="timelineModal none">
+    <div
+        id="timelineModal"
+        class="timelineModal none"
+    >
 
         <div class="timelinePanel">
 
             <div class="timelineHeader">
+
                 <h2>Plano do evento</h2>
 
-                <button type="button"
-                        id="closeTimelineButton"
-                        class="closeTimelineButton">
+                <button
+                    type="button"
+                    id="closeTimelineButton"
+                    class="closeTimelineButton"
+                >
                     ×
                 </button>
+
             </div>
 
             <p>
-                Esta secção é opcional. Se não preencheres nenhuma
-                etapa, a página PLANO não será acrescentada ao PDF.
+                Esta secção é opcional.
+                Se não preencheres nenhuma etapa,
+                a página PLANO não será acrescentada ao PDF.
             </p>
 
             <div id="timelineStages"></div>
 
             <div class="timelineActions">
 
-                <button type="button" id="addStageButton">
+                <button
+                    type="button"
+                    id="addStageButton"
+                >
                     + Adicionar etapa
                 </button>
 
-                <button type="button" id="saveTimelineButton">
+                <button
+                    type="button"
+                    id="saveTimelineButton"
+                >
                     Concluir
                 </button>
 
@@ -247,11 +267,8 @@
         </div>
 
     </div>`;
-
-
-
-
-
+            
+            
             ui(uploadQuoteAndImagesPdfHeader, uploadQuoteAndImagesPdfMenu, uploadQuoteAndImagesPdfFooter);
 
 
