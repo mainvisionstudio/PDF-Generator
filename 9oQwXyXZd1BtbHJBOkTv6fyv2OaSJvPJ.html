@@ -397,11 +397,23 @@
 
             const formUrl = `./assets/pdf/${eventType}.pdf`;
 
-            const formPdfBytes = await fetch(formUrl).then(res => res.arrayBuffer());
+const formPdfBytes = await fetch(formUrl)
+    .then(response => response.arrayBuffer());
 
-            var pdfDoc = await PDFDocument.load(formPdfBytes)
+var pdfDoc = await PDFDocument.load(formPdfBytes);
 
-            const form = pdfDoc.getForm();
+pdfDoc.registerFontkit(fontkit);
+
+const soraBoldBytes = await fetch(
+    "./assets/fonts/Sora-Bold.ttf"
+).then(response => response.arrayBuffer());
+
+const soraBold = await pdfDoc.embedFont(
+    soraBoldBytes,
+    { subset: true }
+);
+
+const form = pdfDoc.getForm();
 
 
 
