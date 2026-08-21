@@ -1031,35 +1031,46 @@ const form = pdfDoc.getForm();
             //Remove Pages
 
             const alignmentUnusedPages =
-   
-            timelineStages.length === 0 ? [11] : [];
-            
-            let unusedPages = [...maqueteUnusedPages, ...refUnusedPages, ...quoteUnusedPages];
+    timelineStages.length === 0
+        ? [11]
+        : [];
 
-            console.log(unusedPages);
+let unusedPages = [
+    ...alignmentUnusedPages,
+    ...maqueteUnusedPages,
+    ...refUnusedPages,
+    ...quoteUnusedPages
+];
 
+console.log(unusedPages);
 
+let removedPagesCount = 1;
 
-            let removedPagesCount = 1;
+for (const pageNumber of unusedPages) {
 
-            for (const pageNumber of unusedPages) {
+    const adjustedPageNumber =
+        pageNumber - removedPagesCount;
 
-                const adjustedPageNumber = pageNumber - removedPagesCount;
+    if (
+        adjustedPageNumber >= 0 &&
+        adjustedPageNumber < pdfDoc.getPageCount()
+    ) {
 
-                if (adjustedPageNumber >= 0 && adjustedPageNumber < pdfDoc.getPageCount()) {
+        pdfDoc.removePage(
+            adjustedPageNumber
+        );
 
-                    pdfDoc.removePage(adjustedPageNumber);
+        removedPagesCount++;
 
-                    removedPagesCount++;
+    } else {
 
-                } else {
+        console.log(
+            `A página ${pageNumber} não existe no documento.`
+        );
 
-                    console.log(`A página ${pageNumber} não existe no documento.`);
+    }
 
-                }
-
-            }
-
+}
 
 
             //Finish
