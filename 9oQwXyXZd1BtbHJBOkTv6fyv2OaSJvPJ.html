@@ -647,12 +647,21 @@ function drawTimeline(page, stages, font) {
     const red = PDFLib.rgb(244 / 255, 0, 0);
     const black = PDFLib.rgb(0.08, 0.08, 0.08);
 
-   const centerX = 297.6;
-const firstY = 680;
-const distance = 150;
+  const centerX = 297.6;
 
 const lineTopY = 715;
 const lineBottomY = 85;
+
+// Posição do primeiro e do último ponto
+const firstPointY = 680;
+const lastPointY = 100;
+
+// Distribui as etapas pela linha inteira
+const distance =
+    stages.length > 1
+        ? (firstPointY - lastPointY) /
+          (stages.length - 1)
+        : 0;
 
 page.drawLine({
     start: {
@@ -666,11 +675,21 @@ page.drawLine({
     thickness: 4,
     color: red
 });
-
+    
+// Ponta exterior arredondada
+page.drawCircle({
+    x: lineEndX,
+    y,
+    size: 2,
+    color: red
+});
+    
     stages.forEach((stage, index) => {
 
-        const y =
-            firstY - (index * distance);
+       const y =
+    stages.length === 1
+        ? lastPointY
+        : firstPointY - (index * distance);
 
         const rightSide =
             index % 2 === 0;
@@ -699,16 +718,47 @@ page.drawLine({
             size: 7,
             color: red
         });
+        
+        // Pontas redondas da linha vertical
+page.drawCircle({
+    x: centerX,
+    y: lineTopY,
+    size: 2,
+    color: red
+});
 
-        const textX =
-            rightSide ? 350 : 55;
+page.drawCircle({
+    x: centerX,
+    y: lineBottomY,
+    size: 2,
+    color: red
+});
 
-        const textWidth = 190;
+       const textWidth = 190;
+const textGap = 18;
+
+const textRightEdge =
+    centerX - 35 - textGap;
+
+const getTextX = (text, size) => {
+
+    if (rightSide) {
+        return centerX + 53;
+    }
+
+    const width =
+        font.widthOfTextAtSize(
+            text || "",
+            size
+        );
+
+    return textRightEdge - width;
+};
 
         if (stage.title) {
 
             page.drawText(stage.title, {
-                x: textX,
+               x: getTextX(stage.title, 15),
                 y: y + 42,
                 size: 15,
                 font,
@@ -732,7 +782,7 @@ page.drawLine({
         if (schedule) {
 
             page.drawText(schedule, {
-                x: textX,
+                x: getTextX(schedule, 10),
                 y: y + 18,
                 size: 10,
                 font,
@@ -753,7 +803,7 @@ page.drawLine({
             (line, lineIndex) => {
 
                 page.drawText(line, {
-                    x: textX,
+                    x: getTextX(line, 9),
                     y: y - 3 - (lineIndex * 13),
                     size: 9,
                     font,
