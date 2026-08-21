@@ -586,12 +586,193 @@ function collectTimelineStages() {
         );
 
 }
+function formatTimelineDate(value) {
 
+    if (!value) {
+        return "";
+    }
+
+    const parts = value.split("-");
+
+    if (parts.length !== 3) {
+        return value;
+    }
+
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
+
+
+function wrapTimelineText(text, font, size, maxWidth) {
+
+    const words = text.split(/\s+/);
+    const lines = [];
+    let currentLine = "";
+
+    for (const word of words) {
+
+        const testLine =
+            currentLine === ""
+                ? word
+                : `${currentLine} ${word}`;
+
+        const width =
+            font.widthOfTextAtSize(testLine, size);
+
+        if (width <= maxWidth) {
+
+            currentLine = testLine;
+
+        } else {
+
+            if (currentLine !== "") {
+                lines.push(currentLine);
+            }
+
+            currentLine = word;
+        }
+    }
+
+    if (currentLine !== "") {
+        lines.push(currentLine);
+    }
+
+    return lines;
+}
+
+
+function drawTimeline(page, stages, font) {
+
+    const red = PDFLib.rgb(244 / 255, 0, 0);
+    const black = PDFLib.rgb(0.08, 0.08, 0.08);
+
+    const centerX = 297.6;
+    const firstY = 680;
+    const distance = 150;
+
+    const lastY =
+        firstY - ((stages.length - 1) * distance);
+
+    page.drawLine({
+        start: {
+            x: centerX,
+            y: firstY + 35
+        },
+        end: {
+            x: centerX,
+            y: lastY - 35
+        },
+        thickness: 4,
+        color: red
+    });
+
+    stages.forEach((stage, index) => {
+
+        const y =
+            firstY - (index * distance);
+
+        const rightSide =
+            index % 2 === 0;
+
+        const lineEndX =
+            rightSide
+                ? centerX + 35
+                : centerX - 35;
+
+        page.drawLine({
+            start: {
+                x: centerX,
+                y
+            },
+            end: {
+                x: lineEndX,
+                y
+            },
+            thickness: 4,
+            color: red
+        });
+
+        page.drawCircle({
+            x: centerX,
+            y,
+            size: 7,
+            color: red
+        });
+
+        const textX =
+            rightSide ? 350 : 55;
+
+        const textWidth = 190;
+
+        if (stage.title) {
+
+            page.drawText(stage.title, {
+                x: textX,
+                y: y + 42,
+                size: 15,
+                font,
+                color: black,
+                maxWidth: textWidth
+            });
+        }
+
+        const date =
+            formatTimelineDate(stage.date);
+
+        const schedule = [
+            date,
+            stage.startTime && stage.endTime
+                ? `${stage.startTime} - ${stage.endTime}`
+                : stage.startTime || stage.endTime
+        ]
+            .filter(Boolean)
+            .join(" | ");
+
+        if (schedule) {
+
+            page.drawText(schedule, {
+                x: textX,
+                y: y + 18,
+                size: 10,
+                font,
+                color: red,
+                maxWidth: textWidth
+            });
+        }
+
+        const descriptionLines =
+            wrapTimelineText(
+                stage.description || "",
+                font,
+                9,
+                textWidth
+            ).slice(0, 4);
+
+        descriptionLines.forEach(
+            (line, lineIndex) => {
+
+                page.drawText(line, {
+                    x: textX,
+                    y: y - 3 - (lineIndex * 13),
+                    size: 9,
+                    font,
+                    color: black
+                });
+            }
+        );
+    });
+}
 
 
     async function startUploadQuoteAndImagesPdf(filesLogo, filesQuote, filesMaquete, filesRef, name, eventType, timelineStages) {
 
-        try {
+        try { 
+            if (timelineStages.length > 12) {
+
+            alert(
+                "O plano do evento permite no máximo 12 etapas."
+            );
+
+            return;
 
             finish();
 
@@ -607,7 +788,7 @@ function collectTimelineStages() {
 
             if (eventType == "e") {
 
-                maqueteUnusedPages = [10, 11, 12, 13, 14, 15, 16, 17];
+                maqueteUnusedPages = [11, 12, 13, 14, 15, 16, 17, 18];
 
                 refUnusedPages = [18, 19, 20, 21, 22, 23, 24, 25];
 
@@ -619,11 +800,11 @@ function collectTimelineStages() {
 
             } else {
 
-                maqueteUnusedPages = [11, 12, 13, 14, 15, 16, 17, 18];
+                maqueteUnusedPages = [12, 13, 14, 15, 16, 17, 18, 19;
 
-                refUnusedPages = [19, 20, 21, 22, 23, 24, 25, 26];
+                refUnusedPages = [ 20, 21, 22, 23, 24, 25, 26, 27];
 
-                quoteUnusedPages = [27, 28, 29, 30, 31, 32, 33, 34];
+                quoteUnusedPages = [28, 29, 30, 31, 32, 33, 34, 35];
 
 
 
@@ -660,6 +841,18 @@ const soraBold = await pdfDoc.embedFont(
 );
 
 const form = pdfDoc.getForm();
+                
+                if (timelineStages.length > 0) {
+
+    const alignmentPage =
+        pdfDoc.getPage(10);
+
+    drawTimeline(
+        alignmentPage,
+        timelineStages,
+        soraBold
+    );
+}
 
 
 
@@ -835,6 +1028,10 @@ const form = pdfDoc.getForm();
 
             //Remove Pages
 
+            const alignmentUnusedPages =
+   
+            timelineStages.length === 0 ? [11] : [];
+            
             let unusedPages = [...maqueteUnusedPages, ...refUnusedPages, ...quoteUnusedPages];
 
             console.log(unusedPages);
