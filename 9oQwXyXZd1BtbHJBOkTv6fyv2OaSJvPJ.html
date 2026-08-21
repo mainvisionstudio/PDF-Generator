@@ -768,13 +768,14 @@ function drawTimeline(page, stages, font) {
     async function startUploadQuoteAndImagesPdf(filesLogo, filesQuote, filesMaquete, filesRef, name, eventType, timelineStages) {
 
         try { 
-            if (timelineStages.length > 12) {
+            if (timelineStages.length > 8) {
 
             alert(
-                "O plano do evento permite no máximo 12 etapas."
+                "O plano do evento permite no máximo 8 etapas."
             );
 
             return;
+                }
 
             finish();
 
