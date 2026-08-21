@@ -647,25 +647,25 @@ function drawTimeline(page, stages, font) {
     const red = PDFLib.rgb(244 / 255, 0, 0);
     const black = PDFLib.rgb(0.08, 0.08, 0.08);
 
-    const centerX = 297.6;
-    const firstY = 680;
-    const distance = 150;
+   const centerX = 297.6;
+const firstY = 680;
+const distance = 150;
 
-    const lastY =
-        firstY - ((stages.length - 1) * distance);
+const lineTopY = 715;
+const lineBottomY = 85;
 
-    page.drawLine({
-        start: {
-            x: centerX,
-            y: firstY + 35
-        },
-        end: {
-            x: centerX,
-            y: lastY - 35
-        },
-        thickness: 4,
-        color: red
-    });
+page.drawLine({
+    start: {
+        x: centerX,
+        y: lineTopY
+    },
+    end: {
+        x: centerX,
+        y: lineBottomY
+    },
+    thickness: 4,
+    color: red
+});
 
     stages.forEach((stage, index) => {
 
